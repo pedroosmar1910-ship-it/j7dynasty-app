@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J7 Dynasty - Painel Oficial</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00c853">
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --verde:#00c853;
+  --azul:#1565ff;
+  --amarelo:#ffd600;
+  --bg:#060b18;
+  --card:#0d1428;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Bebas Neue', sans-serif;
+}
+
+body{
+  background:linear-gradient(180deg,#081024,#000814);
+  color:white;
+  letter-spacing:1px;
+}
+
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  background:linear-gradient(90deg,var(--verde),var(--azul));
+  padding:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  box-shadow:0 0 25px var(--verde);
+  z-index:1000;
+}
+
+header img{ width:40px; }
+
+header h1{
+  font-size:22px;
+  text-shadow:0 0 10px black;
+}
+
+.container{
+  padding:90px 15px 110px 15px;
+}
+
+.dashboard{
+  background:var(--card);
+  padding:15px;
+  border-radius:15px;
+  margin-bottom:15px;
+  border-left:5px solid var(--amarelo);
+}
+
+.card{
+  background:var(--card);
+  padding:14px;
+  border-radius:15px;
+  margin-bottom:10px;
+  border-left:4px solid var(--verde);
+}
+
+input, select{
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  background:#111c3a;
+  color:white;
+  width:100%;
+  margin-bottom:8px;
+}
+
+.fab{
+  position:fixed;
+  bottom:95px;
+  right:20px;
+  background:linear-gradient(45deg,var(--verde),var(--azul));
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:35px;
+  cursor:pointer;
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content{
+  background:var(--card);
+  padding:20px;
+  border-radius:20px;
+  width:90%;
+}
+
+button{
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,var(--verde),var(--azul));
+  color:white;
+  width:100%;
+  margin-top:5px;
+}
+
+.footer{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  background:#050a18;
+  padding:10px;
+  text-align:center;
+  border-top:2px solid var(--verde);
+}
+
+.footer img{ width:30px; }
+.footer p{ color:var(--amarelo); }
+</style>
+</head>
+<body>
+
+<header>
+<img src="https://i.imgur.com/yWkbO9Q.png">
+<h1>J7 DYNASTY</h1>
+</header>
+
+<div class="container">
+
+<div class="dashboard">
+<h3>DASHBOARD</h3>
+<p>Total de membros: <span id="total">0</span></p>
+</div>
+
+<input type="text" id="search" placeholder="Buscar membro...">
+
+<div id="members"></div>
+
+</div>
+
+<div class="fab" onclick="openModal()">+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<h3>NOVO MEMBRO</h3>
+<input type="text" id="nome" placeholder="Nome">
+<input type="date" id="data">
+<select id="funcao">
+<option>Rush</option>
+<option>Suporte</option>
+<option>Curandeiro</option>
+<option>Granadeiro</option>
+<option>Full Gás</option>
+</select>
+<select id="cargo">
+<option>Vice-líder</option>
+<option>Administrador</option>
+<option>Membro comum</option>
+</select>
+<button onclick="addMember()">Salvar</button>
+<button onclick="closeModal()">Cancelar</button>
+</div>
+</div>
+
+<div class="footer">
+<img src="https://i.imgur.com/yWkbO9Q.png">
+<p>@J7Dynasty</p>
+</div>
+
+<script>
+let members = JSON.parse(localStorage.getItem("j7Members")) || [];
+
+function save(){
+  localStorage.setItem("j7Members", JSON.stringify(members));
+}
+
+function render(){
+  const container = document.getElementById("members");
+  container.innerHTML="";
+  const search = document.getElementById("search").value.toLowerCase();
+
+  let filtered = members.filter(m =>
+    m.nome.toLowerCase().includes(search)
+  );
+
+  filtered.forEach(m=>{
+    container.innerHTML+=`
+    <div class="card">
+      <h4>${m.nome}</h4>
+      <p>Entrada: ${m.data}</p>
+      <p>Função: ${m.funcao}</p>
+      <p>Cargo: ${m.cargo}</p>
+    </div>`;
+  });
+
+  document.getElementById("total").innerText = members.length;
+}
+
+function addMember(){
+  const nome = document.getElementById("nome").value;
+  const data = document.getElementById("data").value;
+  const funcao = document.getElementById("funcao").value;
+  const cargo = document.getElementById("cargo").value;
+
+  if(!nome || !data) return alert("Preencha todos os campos");
+
+  members.push({nome,data,funcao,cargo});
+  save();
+  render();
+  closeModal();
+}
+
+function openModal(){ document.getElementById("modal").style.display="flex"; }
+function closeModal(){ document.getElementById("modal").style.display="none"; }
+
+document.getElementById("search").addEventListener("input",render);
+
+render();
+
+/* REGISTRO DO SERVICE WORKER */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>

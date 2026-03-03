@@ -1,0 +1,21 @@
+{
+  "name": "J7 Dynasty Painel",
+  "short_name": "J7 Dynasty",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000814",
+  "theme_color": "#00c853",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://i.imgur.com/yWkbO9Q.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.imgur.com/yWkbO9Q.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
